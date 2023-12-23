@@ -6,10 +6,9 @@ import sqlite3
 # Set directories/file paths
 wd = r"C:\Users\Gunner\PycharmProjects\SpotifyMMPL"
 source = wd + r"\SourceData\spotify_million_playlist_dataset\data"
-db = wd + r"SpotifyMMPL.db"
 
 # Establish DB connection / cursor
-conn = sqlite3.connect(db)
+conn = sqlite3.connect(os.path.join(wd, "SpotifyMMPL.db"))
 cursor = conn.cursor()
 
 # Import CreateTables script
@@ -27,7 +26,7 @@ columns = [
 
 progress = 1
 
-# Iterate over all JSON files and import data
+# Iterate over all JSON files and load data to RawData table
 for file in os.listdir(source):
     with open(os.path.join(source, file), "r") as json_file:
         for playlist in json.load(json_file)['playlists']:
