@@ -1,32 +1,45 @@
+CREATE TABLE IF NOT EXISTS RawData (
+    pid INTEGER,
+    name TEXT,
+    num_followers INTEGER,
+    track_name TEXT,
+    duration_ms INTEGER,
+    album_name TEXT,
+    artist_name TEXT,
+    track_uri TEXT,
+    album_uri TEXT,
+    artist_uri TEXT
+);
+
 CREATE TABLE IF NOT EXISTS PlaylistTracks (
-	track_id INT,
-	pl_id INT	
+	playlist_id INTEGER,
+	track_id INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS Playlists (
-	pl_id INT PRIMARY KEY AUTOINCREMENT,
-	pl_name TEXT,
-	pl_followers INT,
-	pl_spotify_id TEXT
+	playlist_id INTEGER PRIMARY KEY AUTOINCREMENT,
+	playlist_name TEXT,
+	playlist_followers INTEGER,
+	playlist_spotify_id TEXT
 );
 
 CREATE TABLE IF NOT EXISTS Tracks (
-	track_id INT PRIMARY KEY AUTOINCREMENT,
+	track_id INTEGER PRIMARY KEY AUTOINCREMENT,
 	track_name TEXT,
-	track_duration INT,
-	track_album INT,
+	track_duration INTEGER,
+	track_album INTEGER,
 	track_spotify_id TEXT
 );
 
 CREATE TABLE IF NOT EXISTS Albums (
-	album_id INT PRIMARY KEY AUTOINCREMENT,
+	album_id INTEGER PRIMARY KEY AUTOINCREMENT,
 	album_name TEXT,
-	album_artist INT,
+	album_artist INTEGER,
 	album_spotify_id TEXT
 );
 
 CREATE TABLE IF NOT EXISTS Artists (
-	artist_id INT PRIMARY KEY AUTOINCREMENT,
+	artist_id INTEGER PRIMARY KEY AUTOINCREMENT,
 	artist_name TEXT,
 	artist_spotify_id TEXT
 );
