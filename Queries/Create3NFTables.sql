@@ -1,3 +1,16 @@
+CREATE INDEX IF NOT EXISTS RawData_pid
+ON RawData (pl_pid);
+
+CREATE INDEX IF NOT EXISTS RawData_tracks
+ON RawData (track_uri);
+
+CREATE INDEX IF NOT EXISTS RawData_artists
+ON RawData (artist_uri);
+
+CREATE INDEX IF NOT EXISTS RawData_albums
+ON RawData (album_uri);
+
+
 CREATE TABLE IF NOT EXISTS Playlists (
 	playlist_id INTEGER PRIMARY KEY,
 	playlist_name TEXT,
@@ -8,7 +21,7 @@ CREATE TABLE IF NOT EXISTS Playlists (
 	playlist_followers INTEGER);
 
 INSERT INTO Playlists (playlist_id, playlist_name, playlist_num_tracks, playlist_num_albums, playlist_num_artists, playlist_duration_ms, playlist_followers)
-SELECT DISTINCT pid, name, num_tracks, num_albums, num_artists, pl_duration_ms, num_followers
+SELECT DISTINCT pl_pid, pl_name, pl_num_tracks, pl_num_albums, pl_num_artists, pl_duration_ms, pl_num_followers
 FROM RawData;
 
 CREATE TABLE IF NOT EXISTS Tracks (

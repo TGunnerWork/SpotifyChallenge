@@ -1,12 +1,12 @@
 CREATE TABLE IF NOT EXISTS RawData (
-    pid INTEGER,
-    name TEXT,
-    num_tracks INTEGER,
-    num_albums INTEGER,
-    num_artists INTEGER,
+    pl_pid INTEGER,
+    pl_name TEXT,
+    pl_num_tracks INTEGER,
+    pl_num_albums INTEGER,
+    pl_num_artists INTEGER,
     pl_duration_ms INTEGER,
-    num_followers INTEGER,
-    collaborative TEXT,
+    pl_num_followers INTEGER,
+    pl_collaborative TEXT,
     pos INTEGER,
     track_name TEXT,
     album_name TEXT,
@@ -15,15 +15,3 @@ CREATE TABLE IF NOT EXISTS RawData (
     track_uri TEXT,
     album_uri TEXT,
     artist_uri TEXT);
-
-CREATE INDEX IF NOT EXISTS RawData_pid
-ON RawData (pid);
-
-CREATE INDEX IF NOT EXISTS RawData_tracks
-ON RawData (track_uri);
-
-CREATE INDEX IF NOT EXISTS RawData_artists
-ON RawData (artist_uri);
-
-CREATE INDEX IF NOT EXISTS RawData_albums
-ON RawData (album_uri);
