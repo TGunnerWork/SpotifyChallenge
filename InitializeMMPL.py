@@ -8,11 +8,11 @@ wd = r"C:\Users\Gunner\PycharmProjects\SpotifyMMPL"
 source = wd + r"\SourceData\spotify_million_playlist_dataset\data"
 
 # Establish DB connection / cursor
-conn = sqlite3.connect(os.path.join(wd, "SpotifyMMPL.db"))
+conn = sqlite3.connect(os.path.join(wd, "Spotify.db"))
 cursor = conn.cursor()
 
 # Import CreateTables script
-with open(os.path.join(wd, "Queries", "CreateTables.sql"), 'r') as script_file:
+with open(os.path.join(wd, "Queries", "CreateImportTable.sql"), 'r') as script_file:
     create_tables = script_file.read()
 
 # Execute CreateTables script
