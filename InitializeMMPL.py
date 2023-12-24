@@ -19,28 +19,27 @@ with open(os.path.join(wd, "Queries", "CreateTables.sql"), 'r') as script_file:
 cursor.executescript(create_tables)
 conn.commit()
 
-# Columns of interest
-columns = [
-    'pid', 'name', 'num_followers', 'track_name', 'duration_ms',
-    'album_name', 'artist_name', 'track_uri', 'album_uri', 'artist_uri']
+columns = ['pl_pid', 'pl_name', 'pl_num_tracks', 'pl_num_albums', 'pl_num_artists', 'pl_duration_ms',
+           'pl_num_followers', 'pl_collaborative', 'pos', 'track_name', 'album_name', 'artist_name',
+           'duration_ms', 'track_uri', 'album_uri', 'artist_uri']
+meta = ['name', 'collaborative', 'pid', 'num_tracks', 'num_albums', 'num_followers', 'duration_ms', 'num_artists']
+path = 'tracks'
+prefix = "pl_"
 
 progress = 1
 
 # Iterate over all JSON files and load data to RawData table
 for file in os.listdir(source):
     with open(os.path.join(source, file), "r") as json_file:
+        print(f"Processing JSON {progress} of 1,000.")
         for playlist in json.load(json_file)['playlists']:
-            # 'Progress' bar
-            if progress % 100 == 0:
-                print(f"Processing Playlist {progress} out of 1,000,000.")
 
             pd.json_normalize(
-                playlist,
-                'tracks',
-                ['pid', 'name', 'num_followers'])[columns].to_sql(
+                playlist, record_path=path, meta=meta, meta_prefix=prefix)[columns].to_sql(
                 "RawData", conn, if_exists='append', index=False)
 
-            progress += 1
             conn.commit()
+        progress += 1
 
 conn.close()
+# About 2 hours
