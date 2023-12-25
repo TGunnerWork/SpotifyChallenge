@@ -1,6 +1,6 @@
-DROP TABLE Tracks;
-DROP TABLE Albums;
-DROP TABLE Artists;
-DROP TABLE Playlists;
-DROP TABLE PlaylistsFactTable;
-DROP TABLE TracksFactTable;
+DROP TABLE IF EXISTS RawData;
+DROP TABLE IF EXISTS Playlists;
+DROP TABLE IF EXISTS Artists;
+DROP TABLE IF EXISTS Albums;
+DROP TABLE IF EXISTS Tracks;
+DROP TABLE IF EXISTS PlaylistsFactTable;
