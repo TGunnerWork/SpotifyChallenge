@@ -37,23 +37,29 @@ CREATE TABLE IF NOT EXISTS Artists (
 	);
 
 CREATE TABLE IF NOT EXISTS Albums (
-    album_uri TEXT PRIMARY KEY,
+    album_uri TEXT,
     artist_uri TEXT,
     album_name TEXT,
-    FOREIGN KEY (artist_uri) REFERENCES Artists (artist_uri)
+    FOREIGN KEY (artist_uri) REFERENCES Artists (artist_uri),
+    PRIMARY KEY (album_uri, artist_uri)
     );
 
 CREATE TABLE IF NOT EXISTS Tracks (
-	track_uri TEXT PRIMARY KEY,
+	track_uri TEXT,
 	album_uri TEXT,
+	artist_uri TEXT,
 	track_name TEXT,
 	track_duration_ms INTEGER,
-	FOREIGN KEY (album_uri) REFERENCES Albums (album_uri)
+	FOREIGN KEY (album_uri) REFERENCES Albums (album_uri),
+	FOREIGN KEY (artist_uri) REFERENCES Artists (artist_uri),
+	PRIMARY KEY (track_uri, album_uri, artist_uri)
 	);
 
-CREATE TABLE IF NOT EXISTS PlaylistsFactTable (
+CREATE TABLE IF NOT EXISTS PlaylistTracks (
     playlist_id TEXT,
     track_uri TEXT,
+    track_position INT,
     FOREIGN KEY (playlist_id) REFERENCES Playlists (playlist_id),
-    FOREIGN KEY (track_uri) REFERENCES Tracks (track_uri)
+    FOREIGN KEY (track_uri) REFERENCES Tracks (track_uri),
+    PRIMARY KEY (playlist_id, track_uri, track_position)
     );
