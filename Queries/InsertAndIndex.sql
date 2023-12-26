@@ -23,7 +23,7 @@ SELECT DISTINCT
     album_name
 FROM RawData;
 
-INSERT INTO Tracks
+INSERT INTO Tracks (track_uri, album_uri, artist_uri, track_name, track_duration_ms)
 SELECT DISTINCT
     track_uri,
     album_uri,
@@ -32,6 +32,7 @@ SELECT DISTINCT
     duration_ms AS track_duration_ms
 FROM RawData;
 
-INSERT INTO PlaylistTracks
-SELECT pl_pid AS playlist_id, track_uri, pos AS track_position
-FROM RawData;
+INSERT INTO PlaylistTracks (playlist_id, track_id, track_position)
+SELECT pl_pid, track_id, pos
+FROM RawData
+JOIN Tracks ON Tracks.track_uri = RawData.track_uri;

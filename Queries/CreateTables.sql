@@ -45,21 +45,21 @@ CREATE TABLE IF NOT EXISTS Albums (
     );
 
 CREATE TABLE IF NOT EXISTS Tracks (
+    track_id INTEGER PRIMARY KEY AUTOINCREMENT,
 	track_uri TEXT,
 	album_uri TEXT,
 	artist_uri TEXT,
 	track_name TEXT,
 	track_duration_ms INTEGER,
 	FOREIGN KEY (album_uri) REFERENCES Albums (album_uri),
-	FOREIGN KEY (artist_uri) REFERENCES Artists (artist_uri),
-	PRIMARY KEY (track_uri, album_uri, artist_uri)
+	FOREIGN KEY (artist_uri) REFERENCES Artists (artist_uri)
 	);
 
 CREATE TABLE IF NOT EXISTS PlaylistTracks (
-    playlist_id TEXT,
-    track_uri TEXT,
+    playlist_id INT,
+    track_id INT,
     track_position INT,
     FOREIGN KEY (playlist_id) REFERENCES Playlists (playlist_id),
-    FOREIGN KEY (track_uri) REFERENCES Tracks (track_uri),
-    PRIMARY KEY (playlist_id, track_uri, track_position)
+    FOREIGN KEY (track_id) REFERENCES Tracks (track_id),
+    PRIMARY KEY (playlist_id, track_id, track_position)
     );

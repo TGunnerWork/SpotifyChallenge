@@ -2,6 +2,9 @@ import json
 import pandas as pd
 import os
 import sqlite3
+from send_email import send_email
+import time
+from datetime import timedelta
 
 
 # Iterate over all JSON files and load data to RawData table
@@ -68,6 +71,8 @@ dtypes = {
 }
 progress = 1
 
+start = time.time()
+
 # Create Tables
 with sqlite3.connect(os.path.join(wd, "Spotify.db")) as conn:
     cursor = conn.cursor()
@@ -75,8 +80,19 @@ with sqlite3.connect(os.path.join(wd, "Spotify.db")) as conn:
         cursor.executescript(script_file.read())
         conn.commit()
 
+send_email("CreateTables.sql has completed.",
+           f'Process completed at {time.strftime("%H:%M:%S", time.localtime(time.time()))}.' +
+           f'\nProcess took {str(timedelta(seconds=time.time()-start))}')
+
+start = time.time()
+
 # Import data into DB
 for json_file in os.listdir(source):
     print(f"Processing JSON {progress} of 1,000.")
     process_json(json_file)
     progress += 1
+
+send_email("JSON Import has completed.",
+           'All JSON files have been imported into database.\n' +
+           f'Process completed at {time.strftime("%H:%M:%S", time.localtime(time.time()))}.' +
+           f'\nProcess took {str(timedelta(seconds=time.time()-start))}')
