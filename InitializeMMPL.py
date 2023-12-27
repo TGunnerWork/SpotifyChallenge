@@ -2,9 +2,9 @@ import json
 import pandas as pd
 import os
 import sqlite3
-from send_email import send_email
-import time
-from datetime import timedelta
+# from send_email import send_email
+# import time
+# from datetime import timedelta
 
 
 # Iterate over all JSON files and load data to RawData table
@@ -72,7 +72,7 @@ dtypes = {
 }
 progress = 1
 
-start = time.time()
+# start = time.time()
 
 # Create Tables
 with sqlite3.connect(os.path.join(wd, "Spotify.db")) as conn:
@@ -81,11 +81,11 @@ with sqlite3.connect(os.path.join(wd, "Spotify.db")) as conn:
         cursor.executescript(script_file.read())
         conn.commit()
 
-send_email("CreateTables.sql has completed.",
-           f'Process completed at {time.strftime("%H:%M:%S", time.localtime(time.time()))}.' +
-           f'\nProcess took {str(timedelta(seconds=time.time()-start))}')
+# send_email("CreateTables.sql has completed.",
+#           f'Process completed at {time.strftime("%H:%M:%S", time.localtime(time.time()))}.' +
+#           f'\nProcess took {str(timedelta(seconds=time.time()-start))}')
 
-start = time.time()
+# start = time.time()
 
 # Import data into DB
 for json_file in os.listdir(os.path.join(wd, source_data)):
@@ -93,11 +93,7 @@ for json_file in os.listdir(os.path.join(wd, source_data)):
     process_json(os.path.join(os.path.join(wd, source_data), json_file))
     progress += 1
 
-send_email("JSON Import has completed.",
-           'All JSON files have been imported into database.\n' +
-           f'Process completed at {time.strftime("%H:%M:%S", time.localtime(time.time()))}.' +
-           f'\nProcess took {str(timedelta(seconds=time.time()-start))}')
-
-os.path.relpath('data', os.getcwd())
-
-os.listdir(os.path.join(os.getcwd(), r'SourceData\spotify_million_playlist_dataset\data'))
+# send_email("JSON Import has completed.",
+#           'All JSON files have been imported into database.\n' +
+#           f'Process completed at {time.strftime("%H:%M:%S", time.localtime(time.time()))}.' +
+#           f'\nProcess took {str(timedelta(seconds=time.time()-start))}')
