@@ -9,8 +9,8 @@ from datetime import timedelta
 
 # Iterate over all JSON files and load data to RawData table
 def process_json(file):
-    with sqlite3.connect(os.path.join(wd, "Spotify.db")) as connection:
-        with open(os.path.join(source, file), "r") as proc_file:
+    with sqlite3.connect("Spotify.db") as connection:
+        with open(file, "r") as proc_file:
             pd.json_normalize(
                 json.load(proc_file)['playlists'],
                 record_path='tracks', meta=meta, meta_prefix='pl_', errors='ignore'
@@ -18,8 +18,9 @@ def process_json(file):
 
 
 # Set directories/file paths
-wd = r"C:\Users\Gunner\PycharmProjects\SpotifyMMPL"
-source = wd + r"\SourceData\spotify_million_playlist_dataset\data"
+wd = os.getcwd()
+source_data = os.path.join(os.getcwd(), r'SourceData\spotify_million_playlist_dataset\data')
+
 columns = [
     'pl_pid',
     'pl_name',
@@ -87,12 +88,16 @@ send_email("CreateTables.sql has completed.",
 start = time.time()
 
 # Import data into DB
-for json_file in os.listdir(source):
+for json_file in os.listdir(os.path.join(wd, source_data)):
     print(f"Processing JSON {progress} of 1,000.")
-    process_json(json_file)
+    process_json(os.path.join(os.path.join(wd, source_data), json_file))
     progress += 1
 
 send_email("JSON Import has completed.",
            'All JSON files have been imported into database.\n' +
            f'Process completed at {time.strftime("%H:%M:%S", time.localtime(time.time()))}.' +
            f'\nProcess took {str(timedelta(seconds=time.time()-start))}')
+
+os.path.relpath('data', os.getcwd())
+
+os.listdir(os.path.join(os.getcwd(), r'SourceData\spotify_million_playlist_dataset\data'))
