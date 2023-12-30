@@ -1,6 +1,6 @@
 PRAGMA foreign_keys = ON;
 
-CREATE TABLE IF NOT EXISTS RawData (
+CREATE TABLE RawData (
     pl_pid INTEGER,
     pl_name TEXT,
     pl_num_tracks INTEGER,
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS RawData (
     artist_uri TEXT
     );
 
-CREATE TABLE IF NOT EXISTS Playlists (
+CREATE TABLE Playlists (
 	playlist_id INTEGER PRIMARY KEY,
 	playlist_name TEXT,
 	playlist_description TEXT,
@@ -31,12 +31,12 @@ CREATE TABLE IF NOT EXISTS Playlists (
 	playlist_followers INTEGER
 	);
 
-CREATE TABLE IF NOT EXISTS Artists (
+CREATE TABLE Artists (
 	artist_uri TEXT PRIMARY KEY,
 	artist_name TEXT
 	);
 
-CREATE TABLE IF NOT EXISTS Albums (
+CREATE TABLE Albums (
     album_uri TEXT,
     artist_uri TEXT,
     album_name TEXT,
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS Albums (
     PRIMARY KEY (album_uri, artist_uri)
     );
 
-CREATE TABLE IF NOT EXISTS Tracks (
+CREATE TABLE Tracks (
     track_id INTEGER PRIMARY KEY AUTOINCREMENT,
 	track_uri TEXT,
 	album_uri TEXT,
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS Tracks (
 	FOREIGN KEY (artist_uri) REFERENCES Artists (artist_uri)
 	);
 
-CREATE TABLE IF NOT EXISTS PlaylistTracks (
+CREATE TABLE PlaylistTracks (
     playlist_id INT,
     track_id INT,
     track_position INT,

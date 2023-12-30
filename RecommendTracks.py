@@ -4,6 +4,7 @@ import json
 import sqlite3
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 from collections import Counter
 from scipy.sparse import csr_matrix, load_npz
 
@@ -86,14 +87,15 @@ def find_tracks_using_artists(playlist, conn):
 
 challenge_json = "SourceData/Spotify_million_playlist_dataset_challenge/challenge_set.json"
 database = "Spotify.db"
-progress = 1
 
 # Load challenge dataset
 with open(challenge_json, 'r') as file:
     challenge_playlists = json.load(file)['playlists']
 
-# Load collaborative filter matrix
-sim = load_npz('col_fil_spotify.npz')
+# Load collaborative filter matrix if not already in memory
+if __name__ == '__main__':
+    print("Loading matrix")
+    sim = load_npz('col_fil_spotify.npz')
 
 with open('spotify_challenge_results.csv', 'w', newline='') as csv_file:
     csv.writer(csv_file).writerow(["team_info", "Team Gunner", "tgwork11@gmail.com"])
@@ -104,9 +106,8 @@ with open('spotify_challenge_results.csv', 'a', newline='') as csv_file:
 
         csr_matrix_shape = connection.cursor().execute("SELECT COUNT(*) FROM Tracks;").fetchone()[0] + 1
 
-        for challenge_playlist in challenge_playlists:
+        for challenge_playlist in tqdm(challenge_playlists, desc="Processing Playlists", unit=" playlists"):
 
-            print(f"Processing JSON file {progress} of 10,000.")
             derived_tracks = []
             seed_tracks = []
 
@@ -164,5 +165,3 @@ with open('spotify_challenge_results.csv', 'a', newline='') as csv_file:
 
             # Save recommendations to csv output file
             csv.writer(csv_file).writerow([challenge_playlist['pid']] + recommended_uris)
-
-            progress += 1

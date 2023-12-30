@@ -16,5 +16,7 @@ csr = csr_matrix(([1]*len(df), (df['playlist_id'], df['track_id'])))
 # generate similarity scores
 sim = cosine_similarity(csr.T, dense_output=False)
 
-# save model
-save_npz("col_fil_spotify.npz", sim)
+# If this script is being run on its own, save the matrix.
+if __name__ == '__main__':
+    print("Saving matrix")
+    save_npz("col_fil_spotify.npz", sim)

@@ -2,6 +2,7 @@ import json
 import pandas as pd
 import os
 import sqlite3
+from tqdm import tqdm
 
 # Set directories/file paths
 source_data = "SourceData/spotify_million_playlist_dataset/data"
@@ -56,18 +57,19 @@ dtypes = {
     'artist_uri': str
 }
 
-# Create Tables
 with sqlite3.connect("Spotify.db") as conn:
-    cursor = conn.cursor()
+    # Create tables
     with open("Queries/CreateTables.sql", 'r') as script_file:
-        cursor.executescript(script_file.read())
-        conn.commit()
+        conn.cursor().executescript(script_file.read())
 
     # Import data into DB
-    for json_file in os.listdir(source_data):
+    for json_file in tqdm(os.listdir(source_data), desc="Importing JSONs", unit=" JSON files"):
         with open(os.path.join(source_data, json_file), 'r') as file:
             pd.json_normalize(
                 json.load(file)['playlists'],
                 record_path='tracks', meta=meta, meta_prefix='pl_', errors='ignore'
             )[columns].to_sql("RawData", conn, if_exists='append', index=False)
 
+    # Create indices on tables
+    with open("Queries/IndexTables.sql", 'r') as script_file:
+        conn.cursor().executescript(script_file.read())
