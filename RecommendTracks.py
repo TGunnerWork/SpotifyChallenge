@@ -1,5 +1,5 @@
-import re
 import csv
+import re
 import json
 import sqlite3
 import numpy as np
