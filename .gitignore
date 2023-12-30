@@ -3,3 +3,6 @@ p11venv/
 .idea/
 Spotify.db
 Spotify.db-journal
+send_email.py
+col_fil_spotify.npz
+spotify_challenge_results.csv
