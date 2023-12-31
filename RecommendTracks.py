@@ -11,42 +11,49 @@ from scipy.sparse import csr_matrix, load_npz
 
 def find_tracks_using_title(playlist, conn):
 
-    no_tracks_script = "SELECT DISTINCT track_id " + \
-                       "FROM PlaylistTracks " + \
-                       "WHERE playlist_id = " + \
-                            "(SELECT playlist_id " + \
-                            "FROM Playlists " + \
-                            "WHERE {} " + \
-                            "ORDER BY playlist_num_tracks DESC " + \
-                            "LIMIT 1);"
-    eq_pl = "LOWER(REPLACE(playlist_name, ' ', '')) = '{}'"
-    like_pl = "'%' || LOWER(REPLACE(playlist_name, ' ', '')) || '%' LIKE '%{}%'"
+    # fetches the 5 most popular tracks among playlists that share a similar name with the challenge playlist name
+    similar_playlist_tracks = (
+            "SELECT track_id FROM PlaylistTracks " +
+            "WHERE playlist_id = " +
+            "(SELECT playlist_id FROM Playlists WHERE {} ORDER BY playlist_num_tracks DESC) " +
+            "GROUP BY track_id ORDER BY COUNT(*) LIMIT 5;")
+
     playlist_name = playlist['name'].replace("'", "")
 
+    # 'Exact' match playlist names with challenge playlist name
     added_tracks = [
         record[0]
         for record
-        in conn.cursor().execute(no_tracks_script.format(eq_pl.format(
-            playlist_name.lower().replace(" ", "")
-        ))).fetchall()]
+        in conn.cursor().execute(
+            similar_playlist_tracks.format(
+                "LOWER(REPLACE(playlist_name, ' ', '')) = '{}'".format(
+                    playlist_name.lower().replace(" ", "")
+                )
+            )).fetchall()]
 
+    # 'Fuzzy' match
     if len(added_tracks) == 0 and playlist['num_samples'] == 0:
         added_tracks = [
             record[0]
             for record
             in conn.cursor().execute(
-                no_tracks_script.format(like_pl.format(
-                    playlist_name.lower().replace(" ", "")
-                ))).fetchall()]
+                similar_playlist_tracks.format(
+                    "'%' || LOWER(REPLACE(playlist_name, ' ', '')) || '%' LIKE '%{}%'".format(
+                        playlist_name.lower().replace(" ", "")
+                    )
+                )).fetchall()]
 
+        # Very fuzzy match
         if len(added_tracks) == 0:
             added_tracks = [
                 record[0]
                 for record
                 in conn.cursor().execute(
-                    no_tracks_script.format(like_pl.format(
-                        re.sub(pattern=r'[^a-z0-9]', repl='', string=playlist_name)
-                    ))).fetchall()]
+                    similar_playlist_tracks.format(
+                        "'%' || LOWER(REPLACE(playlist_name, ' ', '')) || '%' LIKE '%{}%'".format(
+                            re.sub(pattern=r'[^a-z0-9]', repl='', string=playlist_name)
+                        )
+                    )).fetchall()]
 
     return added_tracks
 
@@ -111,12 +118,14 @@ with open('spotify_challenge_results.csv', 'a', newline='') as csv_file:
             derived_tracks = []
             seed_tracks = []
 
-            # Check if the playlist has a name, if so, add tracks
+            # Fetch tracks from DB playlists that 'match' playlist names
             if 'name' in challenge_playlist.keys():
                 derived_tracks += find_tracks_using_title(challenge_playlist, connection)
 
-            # Check if existing tracks favor certain artists
-            if len(challenge_playlist['tracks']) > 0:
+            # Add playlist tracks to input tracks
+            if challenge_playlist['tracks']:
+
+                # Check if the playlist favors artists. If so, add each artist's top 5 to input tracks
                 derived_tracks += find_tracks_using_artists(challenge_playlist, connection)
 
                 seed_query = "SELECT track_id FROM Tracks WHERE track_uri IN ({});"
