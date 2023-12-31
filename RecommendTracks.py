@@ -16,7 +16,7 @@ def find_tracks_using_title(playlist, conn):
             "SELECT track_id FROM PlaylistTracks " +
             "WHERE playlist_id = " +
             "(SELECT playlist_id FROM Playlists WHERE {} ORDER BY playlist_num_tracks DESC) " +
-            "GROUP BY track_id ORDER BY COUNT(*) LIMIT 5;")
+            "GROUP BY track_id ORDER BY COUNT(*) DESC LIMIT 5;")
 
     playlist_name = playlist['name'].replace("'", "")
 
@@ -32,7 +32,7 @@ def find_tracks_using_title(playlist, conn):
             )).fetchall()]
 
     # 'Fuzzy' match
-    if len(added_tracks) == 0 and playlist['num_samples'] == 0:
+    if not (added_tracks or playlist['tracks']):
         added_tracks = [
             record[0]
             for record
@@ -44,7 +44,7 @@ def find_tracks_using_title(playlist, conn):
                 )).fetchall()]
 
         # Very fuzzy match
-        if len(added_tracks) == 0:
+        if not added_tracks:
             added_tracks = [
                 record[0]
                 for record
@@ -66,7 +66,7 @@ def find_tracks_using_artists(playlist, conn):
                         " FROM Tracks" + \
                         " WHERE artist_uri = '{}') " + \
                    "GROUP BY track_id " + \
-                   "ORDER BY COUNT(*) " + \
+                   "ORDER BY COUNT(*) DESC " + \
                    "LIMIT 5;"
     artist_counts = Counter([track['artist_uri'] for track in playlist['tracks']])
     added_tracks = []
@@ -169,7 +169,7 @@ with open('spotify_challenge_results.csv', 'a', newline='') as csv_file:
                 result[0]
                 for result
                 in connection.cursor().execute(
-                    "SELECT track_uri FROM TrackTemp JOIN Tracks ON TrackTemp.track_id = Tracks.track_id;"
+                    "SELECT track_uri FROM TrackTemp LEFT JOIN Tracks ON TrackTemp.track_id = Tracks.track_id;"
                 ).fetchall()]
 
             # Save recommendations to csv output file
