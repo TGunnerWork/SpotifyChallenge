@@ -1,7 +1,6 @@
 CREATE INDEX idx_RD_track_uri ON RawData(track_uri);
-CREATE INDEX idx_RD_album_uri ON RawData(album_uri);
 CREATE INDEX idx_RD_artist_uri ON RawData(artist_uri);
-CREATE INDEX midx_RD_playlist_track ON RawData(pl_id, track_uri);
+CREATE INDEX midx_RD_playlist_track ON RawData(pl_pid, track_uri);
 
 INSERT INTO Playlists (playlist_id, playlist_name)
 SELECT DISTINCT
@@ -17,17 +16,9 @@ SELECT DISTINCT
     artist_name
 FROM RawData;
 
-INSERT INTO Albums (album_uri, artist_uri, album_name)
-SELECT DISTINCT
-    album_uri,
-    artist_uri,
-    album_name
-FROM RawData;
-
-INSERT INTO Tracks (track_uri, album_uri, artist_uri, track_name, track_duration_ms)
+INSERT INTO Tracks (track_uri, artist_uri, track_name)
 SELECT DISTINCT
     track_uri,
-    album_uri,
     artist_uri,
     track_name
 FROM RawData;
@@ -46,6 +37,9 @@ CREATE INDEX idx_PT_track_id ON PlaylistTracks(track_id);
 CREATE INDEX midx_PT_playlist_track ON PlaylistTracks(playlist_id, track_id);
 
 DROP INDEX idx_RD_track_uri;
-DROP INDEX idx_RD_album_uri;
 DROP INDEX idx_RD_artist_uri;
 DROP INDEX midx_RD_playlist_track;
+
+DROP TABLE RawData;
+
+VACUUM;

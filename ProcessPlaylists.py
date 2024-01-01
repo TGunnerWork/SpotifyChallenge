@@ -6,7 +6,8 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from collections import Counter
-from scipy.sparse import csr_matrix, load_npz
+from scipy.sparse import csr_matrix
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 def find_tracks_using_title(playlist, conn):
@@ -95,13 +96,20 @@ def find_tracks_using_artists(playlist, conn):
 challenge_json = "SourceData/Spotify_million_playlist_dataset_challenge/challenge_set.json"
 database = "Spotify.db"
 challenge_solution_csv = "spotify_challenge_results.csv"
-model_npz = "col_fil_spotify.npz"
 track_order = list(np.arange(500)+1)
 
-# Load collaborative filter matrix if not already in memory
-if __name__ == "__main__":
-    print("Loading matrix - about 5 min")
-    sim = load_npz(model_npz)
+# Gather unique Playlist-Track interactions
+with sqlite3.connect("Spotify.db") as connection:
+    df = pd.read_sql_query(
+        "SELECT DISTINCT playlist_id, track_id FROM PlaylistTracks;",
+        connection
+    )
+
+# Transform into sparse matrix
+csr = csr_matrix(([1]*len(df), (df["playlist_id"], df["track_id"])))
+
+# Generate similarity score matrix
+sim = cosine_similarity(csr.T, dense_output=False)
 
 # Write team information on first row of solution
 with open(challenge_solution_csv, "w", newline="") as csv_file:

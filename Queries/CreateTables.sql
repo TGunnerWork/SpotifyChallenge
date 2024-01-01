@@ -5,10 +5,8 @@ CREATE TABLE RawData (
     pl_name TEXT,
     pos INTEGER,
     track_name TEXT,
-    album_name TEXT,
     artist_name TEXT,
     track_uri TEXT,
-    album_uri TEXT,
     artist_uri TEXT
     );
 
@@ -22,21 +20,12 @@ CREATE TABLE Artists (
 	artist_name TEXT
 	);
 
-CREATE TABLE Albums (
-    album_uri TEXT,
-    artist_uri TEXT,
-    album_name TEXT,
-    FOREIGN KEY (artist_uri) REFERENCES Artists (artist_uri),
-    PRIMARY KEY (album_uri, artist_uri)
-    );
-
 CREATE TABLE Tracks (
     track_id INTEGER PRIMARY KEY AUTOINCREMENT,
-	track_uri TEXT,
-	album_uri TEXT,
+    track_uri TEXT,
+    album_uri TEXT,
 	artist_uri TEXT,
 	track_name TEXT,
-	FOREIGN KEY (album_uri) REFERENCES Albums (album_uri),
 	FOREIGN KEY (artist_uri) REFERENCES Artists (artist_uri)
 	);
 

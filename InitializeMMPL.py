@@ -9,47 +9,30 @@ columns = [
     "pl_name",
     "pos",
     "track_name",
-    "album_name",
     "artist_name",
     "track_uri",
-    "album_uri",
     "artist_uri"
 ]
 meta = [
     "name",
-    "collaborative",
-    "pid",
-    "num_tracks",
-    "num_albums",
-    "num_followers",
-    "duration_ms",
-    "num_artists",
-    "description"
+    "pid"
 ]
 dtypes = {
     "pl_pid": int,
     "pl_name": str,
-    "pl_num_tracks": int,
-    "pl_num_albums": int,
-    "pl_num_artists": int,
-    "pl_duration_ms": int,
-    "pl_num_followers": int,
-    "pl_collaborative": str,
-    "pl_description": str,
     "pos": int,
     "track_name": str,
-    "album_name": str,
     "artist_name": str,
-    "duration_ms": int,
     "track_uri": str,
-    "album_uri": str,
     "artist_uri": str
 }
+
 cwd = os.getcwd()
 
 with sqlite3.connect("Spotify.db") as conn:
 
     # Create tables
+    print("Creating Database Tables...")
     with open("Queries/CreateTables.sql", "r") as script_file:
         conn.cursor().executescript(script_file.read())
 
