@@ -100,16 +100,16 @@ track_order = list(np.arange(500)+1)
 
 # Gather unique Playlist-Track interactions
 with sqlite3.connect("Spotify.db") as connection:
+    print("Collecting seed playlist-tracks")
     df = pd.read_sql_query(
         "SELECT DISTINCT playlist_id, track_id FROM PlaylistTracks;",
         connection
     )
 
-# Transform into sparse matrix
-csr = csr_matrix(([1]*len(df), (df["playlist_id"], df["track_id"])))
+csr_size = len(df)
 
 # Generate similarity score matrix
-sim = cosine_similarity(csr.T, dense_output=False)
+sim = cosine_similarity(csr_matrix(([1]*csr_size, (df["playlist_id"], df["track_id"]))).T, dense_output=False)
 
 # Write team information on first row of solution
 with open(challenge_solution_csv, "w", newline="") as csv_file:
@@ -123,9 +123,6 @@ with open(challenge_solution_csv, "a", newline="") as csv_file:
 
         # Open challenge dataset
         with open(challenge_json, "r") as challenge_file:
-
-            # Retrieve count of tracks for filter input
-            csr_matrix_shape = connection.cursor().execute("SELECT COUNT(*) FROM Tracks;").fetchone()[0] + 1
 
             # Iterate over the playlists
             for challenge_playlist in tqdm(
@@ -159,18 +156,16 @@ with open(challenge_solution_csv, "a", newline="") as csv_file:
                         ).fetchall()
                     ]
 
-                # Only one of each track
-                tracks = list(set(seed_tracks + derived_tracks))
-
-                # Convert tracks into a 1D sparse matrix
-                csr_pl = csr_matrix(list(np.isin(np.arange(csr_matrix_shape), tracks).astype(int)))
-
                 # Generate 500 ordered track_id recommendations based on seed
                 # tracks and added tracks, but not including seed tracks
                 recommended_tracks = list(filter(
                     lambda x: x not in seed_tracks,
-                    list(np.argsort(csr_pl.dot(sim).toarray().ravel())[::-1])
-                ))[:500]
+                    list(np.argsort(
+                        csr_matrix(list(np.isin(
+                            np.arange(csr_size),
+                            list(set(seed_tracks + derived_tracks))
+                        ).astype(int))).dot(sim).toarray().ravel()
+                    )[::-1])))[:500]
 
                 # Save track_ids to temp table in order
                 pd.DataFrame(
