@@ -23,7 +23,6 @@ CREATE TABLE Artists (
 CREATE TABLE Tracks (
     track_id INTEGER PRIMARY KEY AUTOINCREMENT,
     track_uri TEXT,
-    album_uri TEXT,
 	artist_uri TEXT,
 	track_name TEXT,
 	FOREIGN KEY (artist_uri) REFERENCES Artists (artist_uri)
