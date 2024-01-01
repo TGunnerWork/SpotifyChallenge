@@ -98,11 +98,9 @@ with sqlite3.connect("Spotify.db") as connection:
         connection
     )
 
-csr_size = len(df)
-
 # Generate similarity score matrix
 print("Generating COS Sim Matrix...")
-sim = cosine_similarity(csr_matrix(([1]*csr_size, (df["playlist_id"], df["track_id"]))).T, dense_output=False)
+sim = cosine_similarity(csr_matrix(([1]*len(df), (df["playlist_id"], df["track_id"]))).T, dense_output=False)
 
 # Write team information on first row of solution
 with open(challenge_solution_csv, "w", newline="") as csv_file:
@@ -156,7 +154,9 @@ with (open(challenge_solution_csv, "a", newline="") as csv_file):
                 rec_array = np.argsort(
                     csr_matrix(
                         np.isin(
-                            np.arange(csr_size),
+                            np.arange(
+                                np.array(connection.cursor().execute("SELECT COUNT(*) FROM Tracks;").fetchone())[0]+1
+                            ),
                             np.union1d(
                                 seed_tracks,
                                 derived_tracks
