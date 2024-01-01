@@ -3,18 +3,10 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE RawData (
     pl_pid INTEGER,
     pl_name TEXT,
-    pl_num_tracks INTEGER,
-    pl_num_albums INTEGER,
-    pl_num_artists INTEGER,
-    pl_duration_ms INTEGER,
-    pl_num_followers INTEGER,
-    pl_collaborative TEXT,
-    pl_description TEXT,
     pos INTEGER,
     track_name TEXT,
     album_name TEXT,
     artist_name TEXT,
-    duration_ms INTEGER,
     track_uri TEXT,
     album_uri TEXT,
     artist_uri TEXT
@@ -22,13 +14,7 @@ CREATE TABLE RawData (
 
 CREATE TABLE Playlists (
 	playlist_id INTEGER PRIMARY KEY,
-	playlist_name TEXT,
-	playlist_description TEXT,
-	playlist_num_tracks INTEGER,
-	playlist_num_albums INTEGER,
-	playlist_num_artists INTEGER,
-	playlist_duration_ms INTEGER,
-	playlist_followers INTEGER
+	playlist_name TEXT
 	);
 
 CREATE TABLE Artists (
@@ -50,7 +36,6 @@ CREATE TABLE Tracks (
 	album_uri TEXT,
 	artist_uri TEXT,
 	track_name TEXT,
-	track_duration_ms INTEGER,
 	FOREIGN KEY (album_uri) REFERENCES Albums (album_uri),
 	FOREIGN KEY (artist_uri) REFERENCES Artists (artist_uri)
 	);

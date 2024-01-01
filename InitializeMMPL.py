@@ -7,18 +7,10 @@ from tqdm import tqdm
 columns = [
     "pl_pid",
     "pl_name",
-    "pl_num_tracks",
-    "pl_num_albums",
-    "pl_num_artists",
-    "pl_duration_ms",
-    "pl_num_followers",
-    "pl_collaborative",
-    "pl_description",
     "pos",
     "track_name",
     "album_name",
     "artist_name",
-    "duration_ms",
     "track_uri",
     "album_uri",
     "artist_uri"
@@ -67,7 +59,7 @@ with sqlite3.connect("Spotify.db") as conn:
     # Import data into DB
     for json_file in tqdm(
             os.listdir(),
-            desc="Importing JSONs",
+            desc="Importing JSONs...",
             unit="JSON file"):
 
         with open(json_file, "r") as file:
@@ -83,9 +75,12 @@ with sqlite3.connect("Spotify.db") as conn:
                 if_exists="append",
                 index=False)
 
+            conn.commit()
+
     # Go back to working directory
     os.chdir(cwd)
 
-    # Create indices on tables
-    with open("Queries/IndexTables.sql", "r") as script_file:
+    # Normalize and index database tables
+    with open("Queries/Normalize.sql", "r") as script_file:
+        print("Normalizing and Indexing Database...")
         conn.cursor().executescript(script_file.read())
