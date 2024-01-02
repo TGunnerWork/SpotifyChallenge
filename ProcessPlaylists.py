@@ -107,7 +107,7 @@ with open(challenge_solution_csv, "w", newline="") as csv_file:
     csv.writer(csv_file).writerow(["team_info", "Team Gunner", "tgwork11@gmail.com"])
 
 # Open solution file
-with (open(challenge_solution_csv, "a", newline="") as csv_file):
+with open(challenge_solution_csv, "a", newline="") as csv_file:
 
     # Connect to database
     with sqlite3.connect(database) as connection:
