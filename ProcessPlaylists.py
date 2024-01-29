@@ -28,7 +28,6 @@ with sqlite3.connect("Spotify.db") as connection:
         connection
     )
 
-
 # Creates a sparse binary matrix of tracks vs playlists (csr_matrix)
 # and calculates the cosine similarity scores
 print("Generating COS Sim Matrix...")

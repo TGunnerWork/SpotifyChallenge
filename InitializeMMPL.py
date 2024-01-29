@@ -4,28 +4,24 @@ import os
 import sqlite3
 from tqdm import tqdm
 
-columns = [
-    "pl_pid",
-    "pl_name",
-    "pos",
-    "track_name",
-    "artist_name",
-    "track_uri",
-    "artist_uri"
-]
-meta = [
-    "name",
-    "pid"
-]
-dtypes = {
-    "pl_pid": int,
-    "pl_name": str,
-    "pos": int,
-    "track_name": str,
-    "artist_name": str,
-    "track_uri": str,
-    "artist_uri": str
-}
+columns = ["pl_pid",
+           "pl_name",
+           "pos",
+           "track_name",
+           "artist_name",
+           "track_uri",
+           "artist_uri"]
+
+meta = ["name",
+        "pid"]
+
+dtypes = {"pl_pid": int,
+          "pl_name": str,
+          "pos": int,
+          "track_name": str,
+          "artist_name": str,
+          "track_uri": str,
+          "artist_uri": str}
 
 cwd = os.getcwd()
 
