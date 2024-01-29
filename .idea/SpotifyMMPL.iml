@@ -5,7 +5,7 @@
       <excludeFolder url="file://$MODULE_DIR$/SourceData" />
       <excludeFolder url="file://$MODULE_DIR$/p11venv" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 3.11 (SpotifyMMPL)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PackageRequirementsSettings">
